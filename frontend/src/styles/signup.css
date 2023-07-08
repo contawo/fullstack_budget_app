@@ -1,0 +1,46 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --primary: rgb(0, 80, 155);
+    --secondary: rgb(0, 165, 187);
+    --red: rgb(165, 0, 0);
+    --orange: rgb(194, 126, 0);
+    --purple: rgb(96, 0, 160);
+    --green: rgb(0, 124, 0);
+
+    --font: 'Roboto', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font);
+}
+
+html {
+    height: 100dvh;
+    width: 100dvw;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body {
+    max-width: 1200px;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.logo_container {
+    width: 7rem;
+    height: 7rem;
+}
