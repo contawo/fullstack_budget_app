@@ -14,7 +14,7 @@ export default class Database {
                 }
             })
             const result = await data.json();
-            if (result === {} || result === null || result === undefined) {
+            if (!result) {
                 throw new Error("Data not received")
             }
             return result;
