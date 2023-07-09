@@ -93,6 +93,13 @@ body {
     color: var(--orange);
 }
 
+.error_message {
+    color: var(--red);
+    font-size: .9rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
 .submit_form {
     width: 100%;
     margin: 1rem 0;

@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles/signup.css">
-	<script src="../../scripts/signup.js"></script>
+	<script type="module" src="../../scripts/signup.js" defer></script>
     <title>Sign Up</title>
 </head>
 <body>
@@ -112,6 +112,7 @@
 				required
 			/>
 		</form>
+		<p class="error_message"></p>
 		<button class="submit_form">Create account</button>
 		<footer class="account_footer">
 			<p class="account_footer_text">Already have an account?</p>
