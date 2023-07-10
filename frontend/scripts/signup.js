@@ -53,4 +53,10 @@ submitButton.addEventListener("click", async (e) => {
         valid.removePasswordErrorPresentation(passwordInput, confirmPasswordInput, errorMessage)
     }
 
+    const database = new Database("http://localhost:8000")
+    database.postData("users/create", userInfo).then(() => {
+        localStorage.setItem("userEmail", JSON.stringify(userInfo.email))
+        window.location.href = "http://127.0.0.1:5500/frontend/src/pages/home.html"
+    })
+
 })

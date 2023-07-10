@@ -35,5 +35,15 @@ submitButton.addEventListener("click", async (e) => {
     } else {
         valid.removeErrorPresentation(passwordInput, errorMessage);
     }
-
+    const database = new Database("http://localhost:8000")
+    database.fetchData("users/login").then(res => {
+        const dataArray = res?.data?.filter(item => item.email === userInfo.email && item.password === userInfo.password)
+        if (dataArray.length === 0) {
+            errorMessage.innerText = "User not found, try creating an account";
+        } else {
+            errorMessage.innerText = "";
+            localStorage.setItem("userEmail", JSON.stringify(userInfo.email))
+            window.location.href = "http://127.0.0.1:5500/frontend/src/pages/home.html"
+        }
+    })
 })

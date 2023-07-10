@@ -1,19 +1,18 @@
 
 export default class Database {
     constructor(link) {
-        this.link = link;
+        this.link = link
     }
 
-    async fetchData() {
+    async fetchData(endpoint) {
         try {
-            const data = await fetch(this.link, {
+            const data = await fetch(`${this.link}/${endpoint}`, {
                 method: "GET",
-                mode: "cors",
                 headers: {
                     "Content-Type": "application/json"
                 }
             })
-            const result = await data.json();
+            const result = await data.json()
             if (!result) {
                 throw new Error("Data not received")
             }
@@ -24,10 +23,9 @@ export default class Database {
         }
     }
 
-    async postData(data) {
-        const send = await fetch(this.link, {
+    async postData(endpoint, data) {
+        const send = await fetch(`${this.link}/${endpoint}`, {
             method: "POST",
-            mode: "cors",
             body: JSON.stringify(data),
             headers: {
                 "Content-Type": "application/json"
@@ -35,5 +33,12 @@ export default class Database {
         })
         const sent = await send.json()
         console.log(sent)
+    }
+
+    async authFetch(endpoint) {
+        const response = fetch(`${this.link}/${endpoint}`, {
+            method: "GET"
+        })
+        console.log(response)
     }
 }
