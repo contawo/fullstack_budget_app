@@ -13,9 +13,6 @@ export default class Database {
                 }
             })
             const result = await data.json()
-            if (!result) {
-                throw new Error("Data not received")
-            }
             return result;
 
         } catch(error) {
@@ -32,13 +29,6 @@ export default class Database {
             }
         })
         const sent = await send.json()
-        console.log(sent)
-    }
-
-    async authFetch(endpoint) {
-        const response = fetch(`${this.link}/${endpoint}`, {
-            method: "GET"
-        })
-        console.log(response)
+        return sent;
     }
 }

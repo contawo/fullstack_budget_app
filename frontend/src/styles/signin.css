@@ -12,6 +12,7 @@
     --font: 'Roboto', sans-serif;
     --radius: 10px;
     --filter: blur(10px);
+    --transparent-bg: rgba(255, 255, 255, 0.65);
 }
 
 * {
@@ -49,7 +50,7 @@ body {
 
 /* Main Container */
 .main_container {
-    background-color: rgba(255, 255, 255, 0.65);
+    background-color: var(--transparent-bg);
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -13,7 +13,8 @@ router.post("/create", (req, res) => {
     try {
         const createUser = newUser.save();
         res.status(201).json({
-            created: true
+            created: true,
+            user: newUser
         })
     } catch(err) {
         res.status(400).json({
@@ -33,6 +34,21 @@ router.get('/login', async (req, res) => {
     } catch(err) {
         res.status(500).json({
             loggin: false,
+            error: err
+        })
+    }
+})
+
+router.get("/:id", async (req, res) => {
+    try {
+        const user = await usersModel.findById(req.params.id);
+        res.status(200).json({
+            message: "User found",
+            data: user
+        })
+    } catch(err) {
+        res.status(404).json({
+            message: "Could not find user",
             error: err
         })
     }

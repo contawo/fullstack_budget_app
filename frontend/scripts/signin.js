@@ -42,7 +42,7 @@ submitButton.addEventListener("click", async (e) => {
             errorMessage.innerText = "User not found, try creating an account";
         } else {
             errorMessage.innerText = "";
-            localStorage.setItem("userEmail", JSON.stringify(userInfo.email))
+            localStorage.setItem("userID", JSON.stringify(dataArray[0]?._id))
             window.location.href = "http://127.0.0.1:5500/frontend/src/pages/home.html"
         }
     })
