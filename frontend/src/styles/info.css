@@ -12,7 +12,7 @@
     --font: 'Roboto', sans-serif;
     --radius: 10px;
     --filter: blur(10px);
-    --transparent-bg: rgba(0, 119, 231, 0.65);
+    --transparent-bg: rgba(255, 255, 255, 0.65);
 }
 
 * {
@@ -216,6 +216,24 @@ body {
     font-weight: 900;
 }
 
+.main_empty {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main_empty_container {
+    width: 12rem;
+    height: 12rem;
+}
+
+.main_empty_text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--orange);
+}
+
 /* Expenses */
 .main_expenses {
     width: 100%;
@@ -271,11 +289,6 @@ body {
     font-size: 1.1rem;
     color: var(--red);
 }
-/* 
-.expenses {
-    color: var(--primary);
-    font-weight: 900;
-} */
 
 .food {
     background-color: var(--orange);
@@ -333,8 +346,8 @@ body {
 }
 
 .main_budget_input:focus-within {
-    border: 1px solid var(--ornage);
-    color: var(--orange);
+    border: 1px solid var(--green);
+    color: var(--green);
 }
 
 .main_budget_error {
@@ -495,8 +508,8 @@ body {
 }
 
 .main_add_input:focus-within {
-    border: 1px solid var(--ornage);
-    color: var(--orange);
+    border: 1px solid var(--green);
+    color: var(--green);
 }
 
 .main_add_error {
@@ -532,6 +545,6 @@ body {
 @media screen and (max-width: 480px) {
     .main {
         padding: 0 1rem;
-        max-width: 100vw;
+        width: 100vw;
     }
 }

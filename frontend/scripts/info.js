@@ -1,11 +1,28 @@
 import Database from "../utils/database.js";
-import { testData } from "../utils/testData.js";
+import { FormValidate } from "../utils/validate.js";
+import Elements from "../utils/elements.js";
 
 const errorBanner = document.querySelector(".main_auth_error")
 const greetText = document.querySelector(".main_banner_header_text")
+const bannerMotivation = document.querySelector(".main_banner_text");
+
+const getIncomeLink = document.querySelector(".income");
+const getExpensesLink = document.querySelector(".expenses");
+const getBudgetLink = document.querySelector(".budget");
+const getAddLink = document.querySelector(".add");
+
+const getIncomeContainer = document.querySelector(".main_income");
+const getExpensesContainer = document.querySelector(".main_expenses");
+const getBudgetContainer = document.querySelector(".main_budget");
+const getAddContainer = document.querySelector(".main_add");
+
+let budgetAmount = 0;
+let expensesAmount = 0;
+let incomeAmount = 0;
 
 const userID = JSON.parse(localStorage.getItem("userID"));
-const database = new Database("http://localhost:8000")
+const database = new Database("http://localhost:8000");
+const elements = new Elements();
 database.fetchData(`users/${userID}`).then(res => {
     if (res?.message === "Could not find user" || res === undefined) {
         errorBanner.style.display = "flex"
@@ -14,6 +31,24 @@ database.fetchData(`users/${userID}`).then(res => {
     }
     errorBanner.style.display = "none"
     greetText.innerText = `Welcome, ${res?.data.name.toLowerCase()}`
+    bannerMotivation.innerText = `${res?.data.motivation}`
+    if (res?.data.income.length > 0) {
+        getIncomeContainer.innerHTML = "";
+        res?.data.income.map(income => {
+            const cont = elements.createInfoElement("income", "+", income, "income", "INCOME", "in")
+            getIncomeContainer.appendChild(cont);
+            incomeAmount += income;
+        })
+    }
+    if (res?.data.expenses.length > 0) {
+        getExpensesContainer.innerHTML = "";
+        res?.data.expenses.map(expense => {
+            const cont = elements.createInfoElement("expenses", "-", expense.amount, `${expense.expenseType.toLowerCase()}`, `${expense.expenseType.toUpperCase()}`, "out");
+            getExpensesContainer.appendChild(cont);
+            expensesAmount += expense.amount;
+        })
+    }
+    budgetAmount = res?.data.budgetAmount;
 })
 
 // Select bar
@@ -69,16 +104,6 @@ getExpenseOption.forEach(optione => {
 })
 
 // Info toggle Navigation Bar
-const getIncomeLink = document.querySelector(".income");
-const getExpensesLink = document.querySelector(".expenses");
-const getBudgetLink = document.querySelector(".budget");
-const getAddLink = document.querySelector(".add");
-
-const getIncomeContainer = document.querySelector(".main_income");
-const getExpensesContainer = document.querySelector(".main_expenses");
-const getBudgetContainer = document.querySelector(".main_budget");
-const getAddContainer = document.querySelector(".main_add");
-
 getIncomeLink.classList.add("active")
 let activeLink = getIncomeLink.innerText;
 
@@ -145,7 +170,7 @@ getAddLink.addEventListener("click", () => {
 
 // Error Handling
 const budgetButton = document.querySelector(".main_budget_button");
-const bugetError = document.querySelector(".main_budget_error");
+const budgetError = document.querySelector(".main_budget_error");
 const budgetInput = document.querySelector(".main_budget_input");
 const addTypeContainer = document.querySelector(".main_add_select");
 
@@ -154,59 +179,118 @@ const addButton = document.querySelector(".main_add_button");
 const addInput = document.querySelector(".main_add_input");
 const expenseTypeContainer = document.querySelector(".main_add_expense_select");
 
+const formValidate = new FormValidate();
+
 budgetButton.addEventListener("click", () => {
     if (!budgetInput.value) {
-        bugetError.innerHTML = "Please enter a amount"
+        formValidate.presentInvalidError(budgetInput, budgetError, "Please enter an amount")
         return
     }
-    bugetError.innerHTML = ""
-    console.log(budgetInput.value)
+    formValidate.removeErrorPresentation(budgetInput, budgetError);
+    
+    if (parseInt(budgetInput.value) >= incomeAmount) {
+        formValidate.presentInvalidError(budgetInput, budgetError, `Budget R${parseInt(budgetInput.value)} cannot exceed R${incomeAmount} income`)
+        return
+    }
+    formValidate.removeErrorPresentation(budgetInput, budgetError);
+
+    const info = {
+        id: userID,
+        amount: parseInt(budgetInput.value)
+    }
+
+    database.postData("users/budget/update", info).then(res => {
+        if (res?.message === "Failed to update budget") {
+            budgetError.innerText = "Create account to add budget"
+            return
+        }
+        budgetError.innerText = "";
+        alert("Budget updated successfully")
+        window.location.reload();
+    }).catch(() => {
+        budgetError.innerText = "Server error, please try again"
+        return
+    })
 })
 
 addButton.addEventListener("click", () => {
     if (selectedType === "") {
-        addError.innerText = "Please choose a type";
-        addTypeContainer.style.border = "1px solid rgb(165, 0, 0)"
+        formValidate.presentInvalidError(addTypeContainer, addError, "Please choose a type")
         return
     } else {
-        addError.innerText = "";
-        addTypeContainer.style.border = "1px solid rgb(187, 187, 187)"
+        formValidate.removeErrorPresentation(addTypeContainer, addError)
     }
 
     if (selectedType === "Expense") {
         if (selectedExpense === "") {
-            addError.innerText = "Please choose expense type";
-            expenseTypeContainer.style.border = "1px solid rgb(165, 0, 0)"
+            formValidate.presentInvalidError(expenseTypeContainer, addError, "Please choose expense type")
             return
         } else {
-            addError.innerText = "";
-            expenseTypeContainer.style.border = "1px solid rgb(187, 187, 187)"
+            formValidate.removeErrorPresentation(expenseTypeContainer, addError)
         }
         
         if (!addInput.value) {
-            addError.innerText = "Please enter amount";
-            addInput.style.border = "1px solid rgb(165, 0, 0)";
+            formValidate.presentInvalidError(addInput, addError, "Please enter amount")
             return
         } else {
-            addError.innerText = "";
-            addInput.style.border = "1px solid rgb(187, 187, 187)";
+            formValidate.removeErrorPresentation(addInput, addError)
         }
 
-        console.log("Selected Type:", selectedType);
-        console.log("Selected Expense:", selectedExpense);
-        console.log("Amount:", addInput.value)
+        parseInt()
+        if ((expensesAmount + parseInt(addInput.value)) >= budgetAmount) {
+            console.log("Expense:", expensesAmount)
+            console.log("Budget:", budgetAmount)
+            console.log("Input", parseInt(addInput.value))
+            console.log("Sum", (expensesAmount + parseInt(addInput.value)))
+            formValidate.presentInvalidError(addInput, addError, `Adding R${parseInt(addInput.value)} will exceed the budget R${budgetAmount}`)
+            return
+        } else {
+            formValidate.removeErrorPresentation(addInput, addError);
+        }
+
+        const info = {
+            id: userID,
+            expenseType: selectedExpense,
+            amount: parseInt(addInput.value)
+        }
+
+        database.postData("users/expenses/add", info).then(res => {
+            if (res?.message === "Could not add expense") {
+                addError.innerText = "Create account to add expense"
+                return 
+            }
+            addError.innerText = "";
+            alert("Expense added successfully");
+            window.location.reload();
+        }).catch(() => {
+            addError.innerText = "Server error, please try again"
+            return
+        })
     } 
     else {
         if (!addInput.value) {
-            addError.innerText = "Please enter amount";
-            addInput.style.border = "1px solid rgb(165, 0, 0)";
+            formValidate.presentInvalidError(addInput, addError, "Please enter amount")
             return
         } else {
-            addError.innerText = "";
-            addInput.style.border = "1px solid rgb(187, 187, 187)";
+            formValidate.removeErrorPresentation(addInput, addError)
+        }
+        
+        const info = {
+            id: userID,
+            amount: parseInt(addInput.value)
         }
 
-        console.log("Selected Type:", selectedType);
-        console.log("Amount:", addInput.value)
+        database.postData("users/income/add", info).then(res => {
+            if (res?.message === "Could not add income") {
+                addError.innerText = "Create account to add income"
+                return
+            }
+            addError.innerText = "";
+            alert("Income addded successfully")
+            window.location.reload();
+        }).catch(() => {
+            addError.innerText = "Server error, please try again"
+            return
+        })
     }
 })

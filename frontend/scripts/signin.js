@@ -15,21 +15,21 @@ submitButton.addEventListener("click", async (e) => {
         password: passwordInput.value
     }
 
-    if (!valid.isValidEmail()) {
+    if (!valid.isValidEmail(userInfo.email)) {
         valid.presentInvalidError(emailInput, errorMessage, "Please enter your email")
         return
     } else {
         valid.removeErrorPresentation(emailInput, errorMessage);
     }
     
-    if (!valid.isAcceptableEmail()) {
+    if (!valid.isAcceptableEmail(userInfo.email)) {
         valid.presentInvalidError(emailInput, errorMessage, "Please enter a valid email")
         return
     } else {
         valid.removeErrorPresentation(emailInput, errorMessage);
     }
 
-    if (!valid.isValidPassword()) {
+    if (!valid.isValidPassword(userInfo.password)) {
         valid.presentInvalidError(passwordInput, errorMessage, "Please enter your password")
         return
     } else {
@@ -45,5 +45,8 @@ submitButton.addEventListener("click", async (e) => {
             localStorage.setItem("userID", JSON.stringify(dataArray[0]?._id))
             window.location.href = "http://127.0.0.1:5500/frontend/src/pages/home.html"
         }
+    }).catch(() => {
+        errorMessage.innerText = "Server error, please try again"
+        return
     })
 })

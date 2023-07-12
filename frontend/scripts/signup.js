@@ -18,35 +18,35 @@ submitButton.addEventListener("click", async (e) => {
         password: passwordInput.value
     }
 
-    if (!valid.isValidName()) {
+    if (!valid.isValidName(userInfo.name)) {
         valid.presentInvalidError(nameInput, errorMessage, "Please enter your name")
         return
     } else {
         valid.removeErrorPresentation(nameInput, errorMessage);
     }
 
-    if (!valid.isValidEmail()) {
+    if (!valid.isValidEmail(userInfo.email)) {
         valid.presentInvalidError(emailInput, errorMessage, "Please enter your email")
         return
     } else {
         valid.removeErrorPresentation(emailInput, errorMessage);
     }
     
-    if (!valid.isAcceptableEmail()) {
+    if (!valid.isAcceptableEmail(userInfo.email)) {
         valid.presentInvalidError(emailInput, errorMessage, "Please enter a valid email")
         return
     } else {
         valid.removeErrorPresentation(emailInput, errorMessage);
     }
 
-    if (!valid.isValidPassword()) {
+    if (!valid.isValidPassword(userInfo.password)) {
         valid.presentInvalidError(passwordInput, errorMessage, "Please enter your password")
         return
     } else {
         valid.removeErrorPresentation(passwordInput, errorMessage);
     }
 
-    if (!valid.isConfirmPassword()) {
+    if (!valid.isConfirmPassword(userInfo.password, confirmPasswordInput.value)) {
         valid.presentInvalidPasswords(passwordInput, confirmPasswordInput, errorMessage, "Passwords do not match")
         return
     } else {
@@ -57,5 +57,8 @@ submitButton.addEventListener("click", async (e) => {
     database.postData("users/create", userInfo).then((res) => {
         localStorage.setItem("userID", JSON.stringify(res?.user._id))
         window.location.href = "http://127.0.0.1:5500/frontend/src/pages/home.html"
+    }).catch(() => {
+        errorMessage.innerText = "Server error, please try again"
+        return
     })
 })

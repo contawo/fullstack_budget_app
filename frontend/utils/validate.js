@@ -1,40 +1,31 @@
+// Form Error Handling and Presentation
 
 export class FormValidate {
-    constructor(name, email, password, confirmPassword) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.confirmPassword = confirmPassword;
-    }
+    constructor(){}
 
-    isValidName() {
-        if (typeof this.name === "string" && this.name.trim().length === 0) return false;
+    isValidName(name) {
+        if (typeof name === "string" && name.trim().length === 0) return false;
         return true;
     }
 
-    isValidEmail() {
-        if (typeof this.email === "string" && this.email.trim().length === 0) return false;
+    isValidEmail(email) {
+        if (typeof email === "string" && email.trim().length === 0) return false;
         return true;
     }
 
-    isAcceptableEmail() {
+    isAcceptableEmail(email) {
         const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.+[a-zA-Z0-9-]*$/;
-        if (this.email.match(validRegex) && this.isValidEmail()) return true;
+        if (email.match(validRegex) && this.isValidEmail(email)) return true;
         return false;
     }
 
-    isValidPassword() {
-        if (typeof this.password === "string" && this.password.trim().length === 0) return false;
+    isValidPassword(password) {
+        if (typeof password === "string" && password.trim().length === 0) return false;
         return true;
     }
 
-    isConfirmPassword() {
-        if (this.confirmPassword === this.password && this.password.trim().length != 0 && this.confirmPassword.trim().length != 0) return true;
-        return false;
-    }
-
-    isValid() {
-        if (this.isValidName() && this.isValidEmail() && this.isValidPassword()) return true;
+    isConfirmPassword(password, confirmPassword) {
+        if (confirmPassword === password && password.trim().length != 0 && confirmPassword.trim().length != 0) return true;
         return false;
     }
 
