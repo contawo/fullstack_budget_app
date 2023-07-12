@@ -1,4 +1,4 @@
-
+// A class that creates HTML Elements
 export default class Elements {
     constructor() {}
 

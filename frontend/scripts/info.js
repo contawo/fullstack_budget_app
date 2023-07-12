@@ -2,15 +2,12 @@ import Database from "../utils/database.js";
 import { FormValidate } from "../utils/validate.js";
 import Elements from "../utils/elements.js";
 
+// Getting elements from the banner
 const errorBanner = document.querySelector(".main_auth_error")
 const greetText = document.querySelector(".main_banner_header_text")
 const bannerMotivation = document.querySelector(".main_banner_text");
 
-const getIncomeLink = document.querySelector(".income");
-const getExpensesLink = document.querySelector(".expenses");
-const getBudgetLink = document.querySelector(".budget");
-const getAddLink = document.querySelector(".add");
-
+// Getting all the container tabs
 const getIncomeContainer = document.querySelector(".main_income");
 const getExpensesContainer = document.querySelector(".main_expenses");
 const getBudgetContainer = document.querySelector(".main_budget");
@@ -20,18 +17,28 @@ let budgetAmount = 0;
 let expensesAmount = 0;
 let incomeAmount = 0;
 
+// Getting the user id from localStorage
 const userID = JSON.parse(localStorage.getItem("userID"));
+
+// Initializing the database
 const database = new Database("http://localhost:8000");
+
+// Initializing the elements
 const elements = new Elements();
+
+// Getting the user information based on the userID
 database.fetchData(`users/${userID}`).then(res => {
     if (res?.message === "Could not find user" || res === undefined) {
         errorBanner.style.display = "flex"
         greetText.innerText = "Welcome, username"
         return
     }
-    errorBanner.style.display = "none"
+
+    errorBanner.style.display = "none" // Removes the banner for unautheticated users
     greetText.innerText = `Welcome, ${res?.data.name.toLowerCase()}`
     bannerMotivation.innerText = `${res?.data.motivation}`
+
+    // Displaying the income amounts on the ui and calculating the incomeAmount
     if (res?.data.income.length > 0) {
         getIncomeContainer.innerHTML = "";
         res?.data.income.map(income => {
@@ -40,6 +47,8 @@ database.fetchData(`users/${userID}`).then(res => {
             incomeAmount += income;
         })
     }
+
+    // Displaying the expenses amounts on the ui and calculating the expensesAmount
     if (res?.data.expenses.length > 0) {
         getExpensesContainer.innerHTML = "";
         res?.data.expenses.map(expense => {
@@ -48,8 +57,10 @@ database.fetchData(`users/${userID}`).then(res => {
             expensesAmount += expense.amount;
         })
     }
-    budgetAmount = res?.data.budgetAmount;
 
+    budgetAmount = res?.data.budgetAmount; // Update the budget amount
+
+    // Updating and display the users performance
     let percentagePerformance = Math.floor((expensesAmount / budgetAmount) * 100);
     console.log(percentagePerformance)
     if (percentagePerformance > 0 && percentagePerformance < 50) {
@@ -86,7 +97,10 @@ database.fetchData(`users/${userID}`).then(res => {
     }
 })
 
-// Select bar
+/*
+Add tab
+- Tracking whether selected income or expense
+*/
 const getSelectBox = document.querySelector(".main_add_select")
 const getSelectBoxText = document.querySelector(".main_add_select_text")
 const getOptionsContainer = document.querySelector(".main_add_options")
@@ -117,7 +131,10 @@ getOption.forEach(option => {
     })
 })
 
-// Select Expenses bar
+/*
+Add tab
+- Tracking which expense the user has selected
+*/
 const getExpenseSelectBox = document.querySelector(".main_add_expense_select")
 const getExpenseSelectBoxText = document.querySelector(".main_add_expense_select_text")
 const getExpenseOptionsContainer = document.querySelector(".main_add_expense_options")
@@ -138,7 +155,12 @@ getExpenseOption.forEach(optione => {
     })
 })
 
-// Info toggle Navigation Bar
+// Info toggle Tab Bar
+const getIncomeLink = document.querySelector(".income");
+const getExpensesLink = document.querySelector(".expenses");
+const getBudgetLink = document.querySelector(".budget");
+const getAddLink = document.querySelector(".add");
+
 getIncomeLink.classList.add("active")
 let activeLink = getIncomeLink.innerText;
 
@@ -203,7 +225,7 @@ getAddLink.addEventListener("click", () => {
     activeLink = getAddLink.innerText;
 })
 
-// Error Handling
+// Error Handling on the Add Tab and updating the database
 const budgetButton = document.querySelector(".main_budget_button");
 const budgetError = document.querySelector(".main_budget_error");
 const budgetInput = document.querySelector(".main_budget_input");

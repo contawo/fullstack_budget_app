@@ -1,4 +1,4 @@
-
+// A class used to interact with the Database
 export default class Database {
     constructor(link) {
         this.link = link

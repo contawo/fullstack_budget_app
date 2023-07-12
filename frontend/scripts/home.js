@@ -1,5 +1,6 @@
 import Database from "../utils/database.js";
 
+// Getting the HTML Elements for manipulation
 const errorBanner = document.querySelector(".main_auth_error");
 const greetText = document.querySelector(".main_banner_header_text");
 const getCanvas = document.querySelector(".main_spendings_container_data");
@@ -10,15 +11,24 @@ const budgetIndicator = document.querySelector(".main_budget_content_graph_indic
 const adviceText = document.querySelector(".account_advice_text");
 const budgetAmountText = document.querySelector(".main_budget_container_month");
 
-budgetIndicator.style.width = "0%";
+budgetIndicator.style.width = "0%"; // Initialize the budget indicator
+
+// Data that will be used by the graph
 let representationData = [1, 1, 1, 1, 1, 1];
 
+// Getting the user id from localStorage
 const userID = JSON.parse(localStorage.getItem("userID"));
+
+// Initializing the database
 const database = new Database("http://localhost:8000")
+
+// Getting the user information based on the userID
 database.fetchData(`users/${userID}`).then(res => {
     if (res?.message === "Could not find user" || res === undefined) {
         errorBanner.style.display = "flex";
         greetText.innerText = "Welcome, username"
+
+        // Displaying the graph with dummy data
         const data = {
           datasets: [{
             label: "Expenses",
@@ -41,6 +51,8 @@ database.fetchData(`users/${userID}`).then(res => {
         });
         return
     }
+
+    // Updating the UI with user information
     errorBanner.style.display = "none"
     greetText.innerText = `Welcome, ${res?.data.name.toLowerCase()}`
     bannerMotivation.innerText = `${res?.data.motivation}`
@@ -51,22 +63,25 @@ database.fetchData(`users/${userID}`).then(res => {
     let expensesSum = 0;
     let budgetAmount = 0;
 
-    if (res?.data.income.length > 0) {
-      res?.data.income.forEach((income) => {
+    if (res?.data.income.length > 0) { 
+      res?.data.income.forEach((income) => { // Calcualting the total income 
         incomeSum += income;
       })
-      budgetAmount = res?.data.budgetAmount;
       res?.data.expenses.forEach((expense) => {
         expensesSum += expense?.amount;
       })
+
+      // Showing the percentange of expense with relation to budget on the ui
       budgetIndicator.style.width = `${(expensesSum / budgetAmount) * 100}%`;
     }
 
-    if (res?.data.expenses.length > 0) {
+    if (res?.data.expenses.length > 0) { 
       expensesSum = 0;
-      res?.data.expenses.forEach((expense) => {
+      res?.data.expenses.forEach((expense) => { // Calcualting the total expenses
         expensesSum += expense?.amount;
       })
+
+      // Updating the chart data
       representationData = [
         res.data.expenses.filter(expense => expense.expenseType === "Food").length,
         res.data.expenses.filter(expense => expense.expenseType === "Entertainment").length,
@@ -76,6 +91,7 @@ database.fetchData(`users/${userID}`).then(res => {
         res.data.expenses.filter(expense => expense.expenseType === "Electricity").length,
       ]
 
+      // Displaying the updated chart
       const data = {
         datasets: [{
           label: "Expenses",
@@ -119,10 +135,12 @@ database.fetchData(`users/${userID}`).then(res => {
       });
     }
 
+    // Updating the ui with user data
     incomeAmount.innerText = `R${incomeSum}`;
     expensesAmount.innerText = `R${expensesSum}`;
     budgetAmount = res?.data.budgetAmount;
     
+    // Updating and display the users performance
     let percentagePerformance = Math.floor((expensesSum / budgetAmount) * 100);
     if (percentagePerformance > 0 && percentagePerformance < 50) {
         const messages = {
