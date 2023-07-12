@@ -49,6 +49,41 @@ database.fetchData(`users/${userID}`).then(res => {
         })
     }
     budgetAmount = res?.data.budgetAmount;
+
+    let percentagePerformance = Math.floor((expensesAmount / budgetAmount) * 100);
+    console.log(percentagePerformance)
+    if (percentagePerformance > 0 && percentagePerformance < 50) {
+        const messages = {
+            id: userID,
+            advice: "If you keep on moving in this pace you will financially stress free, keep on spending less.",
+            motivation: "You are moving on the right track"
+        }
+        database.postData("users/messages/update", messages)
+    }
+    if (percentagePerformance >= 50 && percentagePerformance < 80) {
+        const messages = {
+            id: userID,
+            advice: "Please slow dowm on the expenses in order to stay on budget, do not spend too much.",
+            motivation: "Please be carefull on your expenses"
+        }
+        database.postData("users/messages/update", messages)
+    }
+    if (percentagePerformance >= 80 && percentagePerformance < 100) {
+        const messages = {
+            id: userID,
+            advice: "You have reached the peak of your budget, decrease on the expenses.",
+            motivation: "You are spending too much, slow down."
+        }
+        database.postData("users/messages/update", messages)
+    }
+    if (percentagePerformance === 100) {
+        const messages = {
+            id: userID,
+            advice: "Please add more income or increase your budget because you have blown it.",
+            motivation: "You have reached budget max."
+        }
+        database.postData("users/messages/update", messages)
+    }
 })
 
 // Select bar
@@ -237,11 +272,7 @@ addButton.addEventListener("click", () => {
         }
 
         parseInt()
-        if ((expensesAmount + parseInt(addInput.value)) >= budgetAmount) {
-            console.log("Expense:", expensesAmount)
-            console.log("Budget:", budgetAmount)
-            console.log("Input", parseInt(addInput.value))
-            console.log("Sum", (expensesAmount + parseInt(addInput.value)))
+        if ((expensesAmount + parseInt(addInput.value)) > budgetAmount) {
             formValidate.presentInvalidError(addInput, addError, `Adding R${parseInt(addInput.value)} will exceed the budget R${budgetAmount}`)
             return
         } else {

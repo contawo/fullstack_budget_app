@@ -138,6 +138,23 @@ router.post("/budget/update", async (req, res) => {
     }
 })
 
-
+router.post("/messages/update", async (req, res) => {
+    try {
+        const options = {
+            "advice": req.body.advice,
+            "motivation": req.body.motivation
+        }
+        const updateMessage = await usersModel.findByIdAndUpdate(req.body.id, options)
+        res.status(201).json({
+            message: "Messages updated successfully",
+            update: updateMessage
+        })
+    } catch(err) {
+        res.status(404).json({
+            message: "Could not updated the inputs"
+        })
+    }
+})
 
 module.exports = router;
+

@@ -121,5 +121,48 @@ database.fetchData(`users/${userID}`).then(res => {
 
     incomeAmount.innerText = `R${incomeSum}`;
     expensesAmount.innerText = `R${expensesSum}`;
+    budgetAmount = res?.data.budgetAmount;
+    
+    let percentagePerformance = Math.floor((expensesSum / budgetAmount) * 100);
+    if (percentagePerformance > 0 && percentagePerformance < 50) {
+        const messages = {
+            id: userID,
+            advice: "If you keep on moving in this pace you will financially stress free, keep on spending less.",
+            motivation: "You are moving on the right track"
+        }
+        database.postData("users/messages/update", messages).then(() => {
+          budgetIndicator.style.backgroundColor = "rgb(0, 201, 0)";
+        })
+    }
+    if (percentagePerformance >= 50 && percentagePerformance < 80) {
+        const messages = {
+            id: userID,
+            advice: "Please slow dowm on the expenses in order to stay on budget, do not spend too much.",
+            motivation: "Please be carefull on your expenses"
+        }
+        database.postData("users/messages/update", messages).then(() => {
+          budgetIndicator.style.backgroundColor = "rgb(0, 119, 231)"
+        })
+    }
+    if (percentagePerformance >= 80 && percentagePerformance < 100) {
+        const messages = {
+            id: userID,
+            advice: "You have reached the peak of your budget, decrease on the expenses.",
+            motivation: "You are spending too much, slow down."
+        }
+        database.postData("users/messages/update", messages).then(() => {
+          budgetIndicator.style.backgroundColor = "rgb(236, 154, 0)"
+        })
+    }
+    if (percentagePerformance === 100) {
+        const messages = {
+            id: userID,
+            advice: "Please add more income or increase your budget because you have blown it.",
+            motivation: "You have reached budget max."
+        }
+        database.postData("users/messages/update", messages).then((res) => {
+          budgetIndicator.style.backgroundColor = "rgb(223, 0, 0)"
+        })
+    }
 })
 

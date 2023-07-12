@@ -229,7 +229,7 @@ body {
 }
 
 .main_budget_content_graph_indicator {
-    width: 80%;
+    width: 0%;
     height: 100%;
     background-color: var(--primary);
     border-radius: var(--radius);
