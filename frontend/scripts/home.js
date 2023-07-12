@@ -72,7 +72,7 @@ database.fetchData(`users/${userID}`).then(res => {
       })
 
       // Showing the percentange of expense with relation to budget on the ui
-      budgetIndicator.style.width = `${(expensesSum / budgetAmount) * 100}%`;
+      console.log((expensesSum / budgetAmount) * 100)
     }
 
     if (res?.data.expenses.length > 0) { 
@@ -142,6 +142,7 @@ database.fetchData(`users/${userID}`).then(res => {
     
     // Updating and display the users performance
     let percentagePerformance = Math.floor((expensesSum / budgetAmount) * 100);
+    budgetIndicator.style.width = `${percentagePerformance}%`;
     if (percentagePerformance > 0 && percentagePerformance < 50) {
         const messages = {
             id: userID,
