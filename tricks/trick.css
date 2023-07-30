@@ -1,0 +1,10 @@
+
+
+main {
+    background-color: pink;
+    height: 20rem;
+    /* Centering a div */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
